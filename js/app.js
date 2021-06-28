@@ -19,14 +19,17 @@ class Presupuesto{
         this.restante = Number(presupuesto);//Porque el restante es el mismo al presupuesto al iniciar
         this.gastos = []
     }
+    nuevoGasto(gasto){
+        this.gastos = [...this.gastos,gasto];//Spread operator
+    }
 }
 
 class UI{
     insertarPresupuesto(cantidad){
         const {presupuesto,restante} = cantidad //Destructuring
         //Agregar al HTML
-        document.createElement('#total').textContent = presupuesto;
-        document.createElement('#restante').textContent = restante;
+        document.querySelector('#total').textContent = presupuesto;
+        document.querySelector('#restante').textContent = restante;
     }
     imprimirAlerta(mensaje,tipo){
         const divMensaje = document.createElement('div');
@@ -71,7 +74,7 @@ function agregarGasto(e){
 
     //Leer datos del formulario
     const nombre = document.querySelector('#gasto').value;
-    const cantidad = document.querySelector('#cantidad').value;
+    const cantidad = Number(document.querySelector('#cantidad').value);
 
     //Validar
     if (nombre==='' || cantidad==='') {
@@ -82,5 +85,13 @@ function agregarGasto(e){
         ui.imprimirAlerta('Cantidad no valida','error');
         return;  
     }
+
+    //Generar un objeto gasto
+    const gasto = {nombre,cantidad,id:Date.now()};//Esto es lo contrario a un distructuring, extrae nombre y cantidad de gasto
     
+    presupuesto.nuevoGasto(gasto);
+
+    ui.imprimirAlerta('Gasto añadido correctamente!');//No es necesario pasar success porq va a caer en el else
+    //Reinicia el formulario
+    formulario.reset();
 }
