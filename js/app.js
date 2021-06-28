@@ -1,6 +1,6 @@
 /** Variables y Selectores */
 const formulario = document.querySelector('#agregar-gasto');
-const gastListado = document.querySelector('#gastos ul');
+const gastoListado = document.querySelector('#gastos ul');
 
 
 
@@ -53,6 +53,35 @@ class UI{
             divMensaje.remove();
         },3000);
     }
+
+    agregarGastoListado(gastos){
+        this.limpiarHTML();//Elimina el HTML previo
+        //Iterar sobre los gastos
+        gastos.forEach(gasto => {
+            const {cantidad,nombre,id} = gasto;
+            //Crear un li
+            const nuevoGasto = document.createElement('li');
+            nuevoGasto.className = 'list-group-item d-flex justify-content-between align-items-center';
+            nuevoGasto.dataset.id;//va a poner data-id
+
+            //Agregar el HTML del gasto
+            nuevoGasto.innerHTML = `${nombre} <span class="badge badge-primary badge-pill"> $ ${cantidad}</span>`;
+
+            //Boton para borrar el gasto
+            const btnBorrar = document.createElement('button');
+            btnBorrar.classList.add('btn','btn-danger','borrar-gasto');//Hace lo mismo que className pero diferente sintaxis
+            btnBorrar.innerHTML = 'Borrar &times;';
+            nuevoGasto.appendChild(btnBorrar);
+            
+            //Agregar al HTML
+            gastoListado.appendChild(nuevoGasto);
+        });
+    }
+    limpiarHTML(){
+        while (gastoListado.firstChild) {
+            gastoListado.removeChild(gastoListado.firstChild);
+        }
+    }
 }
 
 //Instanciar globalmente
@@ -92,6 +121,11 @@ function agregarGasto(e){
     presupuesto.nuevoGasto(gasto);
 
     ui.imprimirAlerta('Gasto añadido correctamente!');//No es necesario pasar success porq va a caer en el else
+    
+    //Imprimir los gastos
+    const {gastos} = presupuesto
+    ui.agregarGastoListado(gastos);
+    
     //Reinicia el formulario
     formulario.reset();
 }
