@@ -27,6 +27,10 @@ class Presupuesto{
         const gastado = this.gastos.reduce((total,gasto)=> total + gasto.cantidad, 0);// ,0 porque inicia en 0
         this.restante = this.presupuesto-gastado;
     }
+    eliminarGasto(id){
+        this.gastos = this.gastos.filter(gasto => gasto.id !== id);//Nos traemos todos los gastos menos el de ese id
+        this.calcularRestante();
+    }
 }
 
 class UI{
@@ -76,6 +80,9 @@ class UI{
             const btnBorrar = document.createElement('button');
             btnBorrar.classList.add('btn','btn-danger','borrar-gasto');//Hace lo mismo que className pero diferente sintaxis
             btnBorrar.innerHTML = 'Borrar &times;';
+            btnBorrar.onclick = ()=>{
+                eliminarGasto(id);
+            };
             nuevoGasto.appendChild(btnBorrar);
             
             //Agregar al HTML
@@ -97,13 +104,16 @@ class UI{
         const restanteDiv = document.querySelector('.restante');
         //Comprobar 25%
         if (restante <= presupuesto*0.25) {
-            console.log("enters");
             restanteDiv.classList.remove('alert-success','alert-warning');
             restanteDiv.classList.add('alert-danger');
         }
         else if (restante <= presupuesto*0.5) {
-            restanteDiv.classList.remove('alert-success');
+            restanteDiv.classList.remove('alert-success','alert-danger');
             restanteDiv.classList.add('alert-warning');
+        }
+        else{
+            restanteDiv.classList.remove('alert-danger', 'alert-warning');
+            restanteDiv.classList.add('alert-success');
         }
         
         if (restante<=0) {
@@ -154,10 +164,21 @@ function agregarGasto(e){
     //Imprimir los gastos
     const {gastos,restante} = presupuesto
     ui.agregarGastoListado(gastos);
+
     ui.actualizarRestante(restante);
 
     ui.comprobarPresupuesto(presupuesto);
     
     //Reinicia el formulario
     formulario.reset();
+}
+
+function eliminarGasto(id){
+    //Elimina del objeto
+    presupuesto.eliminarGasto(id);
+    //Elimina los gastos del HTML
+    const{gastos,restante}=presupuesto;
+    ui.agregarGastoListado(gastos);
+    ui.actualizarRestante(restante);
+    ui.comprobarPresupuesto(presupuesto);
 }
