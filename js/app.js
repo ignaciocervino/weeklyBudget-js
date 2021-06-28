@@ -22,7 +22,12 @@ class Presupuesto{
 }
 
 class UI{
-
+    insertarPresupuesto(cantidad){
+        const {presupuesto,restante} = cantidad //Destructuring
+        //Agregar al HTML
+        document.createElement('#total').textContent = presupuesto;
+        document.createElement('#restante').textContent = restante;
+    }
 }
 
 //Instanciar globalmente
@@ -35,4 +40,5 @@ function preguntarPresupuesto(){
         window.location.reload();//Recarga la ventana actual
     }
     presupuesto = new Presupuesto(presupuestoUsuario);
+    ui.insertarPresupuesto(presupuesto);
 }
